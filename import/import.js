@@ -137,7 +137,7 @@ function runGenerator(g) {
 					.catch(function(err){
 						console.log('runGenerator_err',err);
 						//writeResult(err);
-						throw err;
+						it.throw(err);
 					});
 			}
 			else {
