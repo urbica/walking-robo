@@ -36,27 +36,33 @@ function* _task(taskName, step){
 		sh.exit(1);
 	}
 
-	yield new Promise(function(ok,fail){
-		try {
-			prepare(tf);
+	var err=null;
+	try {
+		yield new Promise(function (ok, fail) {
+			try {
+				prepare(tf);
+			}
+			catch (err) {
+				return fail(err);
+			}
+			console.log(`Task '${tf.name}' prepared.`);
+			ok();
+		});
+		if (step && _wr.cmd[step]) {
+			yield execPromise(_wr.cmd[step]);
 		}
-		catch(err){
-			return fail(err);
+		else {
+			yield execPromise(_wr.cmd.download);
+			yield execPromise(_wr.cmd.osmosis);
+			yield execPromise(_wr.cmd.sql);
 		}
-		console.log(`Task '${tf.name}' prepared.`);
-		ok();
-	});
-	if (step && _wr.cmd[step]) {
-		yield execPromise(_wr.cmd[step]);
 	}
-	else {
-		yield execPromise(_wr.cmd.download);
-		yield execPromise(_wr.cmd.osmosis);
-		yield execPromise(_wr.cmd.sql);
+	catch(ex){
+		err = ex;
 	}
 
-	yield new Promise(function(ok){
-		writeResult();
+	yield new Promise(function (ok) {
+		writeResult(err);
 		ok();
 	});
 }
@@ -71,8 +77,8 @@ function prepare(task) {
 	_wr.resultLog = path.resolve(_wr.pathOutput,'import-result.txt');
 	_wr.resultStyles = path.resolve(_wr.pathOutput,'load-styles.txt');
 
-	_wr.cmd.download = `wget -O ${task.name}_src.osm.pbf ${task.file}`;
-	_wr.cmd.osmosis = `osmosis -v --read-pbf ./${task.name}_src.osm.pbf --bounding-box top=${task.bbox.top} left=${task.bbox.left} bottom=${task.bbox.bottom} right=${task.bbox.rigth} completeWays=yes --lp --write-pbf ${task.name}.osm.pbf`;
+	_wr.cmd.download = `wget -O ${task.name}_src.osm.pbf ${task.file} --no-verbose`;
+	_wr.cmd.osmosis = `osmosis1 -v --read-pbf ./${task.name}_src.osm.pbf --bounding-box top=${task.bbox.top} left=${task.bbox.left} bottom=${task.bbox.bottom} right=${task.bbox.rigth} completeWays=yes --lp --write-pbf ${task.name}.osm.pbf`;
 	_wr.cmd.sql = `osm2pgsql -d ${task.name} ${task.name}.osm.pbf -U robosm --cache-strategy sparse -C 500 --style ${_wr.resultStyles}`;
 
 	sh.cd(c.baseDir);
@@ -122,7 +128,7 @@ function runGenerator(g) {
 					.then(iterate)
 					.catch(function(err){
 						console.log('runGenerator_err',err);
-						writeResult(err);
+						//writeResult(err);
 						throw err;
 					});
 			}
