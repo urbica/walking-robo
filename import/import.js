@@ -1,5 +1,5 @@
 var _ = require('lodash');
-var sh = require('shelljs'); sh.config.fatal = true;
+var sh = require('shelljs');
 var fs = require('fs');
 var path = require('path');
 var c = require('./testc');
