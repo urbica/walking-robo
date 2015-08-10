@@ -65,7 +65,7 @@ function* _task(taskName, step){
 		}
 	}
 	catch(ex){
-		console.dir('catch',ex);
+		console.log('catch',ex);
 		err = ex;
 	}
 
