@@ -38,7 +38,6 @@ function* _task(taskName, step){
 
 	var err=null;
 	try {
-		console.log('prepare');
 		yield new Promise(function (ok, fail) {
 			try {
 				prepare(tf);
@@ -50,22 +49,15 @@ function* _task(taskName, step){
 			ok();
 		});
 		if (step && _wr.cmd[step]) {
-			console.log('step',step);
 			yield execPromise(_wr.cmd[step]);
 		}
 		else {
-			console.log('step_download');
 			yield execPromise(_wr.cmd.download);
-
-			console.log('step_osmosis');
 			yield execPromise(_wr.cmd.osmosis);
-
-			console.log('step_sql');
 			yield execPromise(_wr.cmd.sql);
 		}
 	}
 	catch(ex){
-		console.log('catch',ex);
 		err = ex;
 	}
 
@@ -86,7 +78,7 @@ function prepare(task) {
 	_wr.resultStyles = path.resolve(_wr.pathOutput,'load-styles.txt');
 
 	_wr.cmd.download = `wget -O ${task.name}_src.osm.pbf ${task.file} --no-verbose`;
-	_wr.cmd.osmosis = `osmosis1 -v --read-pbf ./${task.name}_src.osm.pbf --bounding-box top=${task.bbox.top} left=${task.bbox.left} bottom=${task.bbox.bottom} right=${task.bbox.rigth} completeWays=yes --lp --write-pbf ${task.name}.osm.pbf`;
+	_wr.cmd.osmosis = `osmosis -v --read-pbf ./${task.name}_src.osm.pbf --bounding-box top=${task.bbox.top} left=${task.bbox.left} bottom=${task.bbox.bottom} right=${task.bbox.rigth} completeWays=yes --lp --write-pbf ${task.name}.osm.pbf`;
 	_wr.cmd.sql = `osm2pgsql -d ${task.name} ${task.name}.osm.pbf -U robosm --cache-strategy sparse -C 500 --style ${_wr.resultStyles}`;
 
 	sh.cd(c.baseDir);
