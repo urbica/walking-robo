@@ -38,6 +38,7 @@ function* _task(taskName, step){
 
 	var err=null;
 	try {
+		console.log('prepare');
 		yield new Promise(function (ok, fail) {
 			try {
 				prepare(tf);
@@ -49,15 +50,22 @@ function* _task(taskName, step){
 			ok();
 		});
 		if (step && _wr.cmd[step]) {
+			console.log('step',step);
 			yield execPromise(_wr.cmd[step]);
 		}
 		else {
+			console.log('step_download');
 			yield execPromise(_wr.cmd.download);
+
+			console.log('step_osmosis');
 			yield execPromise(_wr.cmd.osmosis);
+
+			console.log('step_sql');
 			yield execPromise(_wr.cmd.sql);
 		}
 	}
 	catch(ex){
+		console.dir('catch',ex);
 		err = ex;
 	}
 
