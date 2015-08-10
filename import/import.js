@@ -138,6 +138,7 @@ function runGenerator(g) {
 						console.log('runGenerator_err',err);
 						//writeResult(err);
 						it.throw(err);
+						iterate();
 					});
 			}
 			else {
