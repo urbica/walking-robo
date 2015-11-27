@@ -24,7 +24,7 @@ module.exports = {
 		},
 		{
 			name: "gis",
-			file: "http://download.geofabrik.de/europe/russia-european-part-latest.osm.pbf",
+			file: "http://download.geofabrik.de/russia-latest.osm.pbf",
 			bbox: {
 				top: 55.96,
 				bottom: 55.53,
