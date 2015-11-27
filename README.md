@@ -39,3 +39,8 @@ iojs import/import --task azore
 iojs import/import --task gis --step sql
 ```   
 запустится только заливка в базу из уже скаченного и обрезанного файла
+
+##Как запустить веб сервер
+1. Зайти под robosm
+2. cd ~/data/walking-robo
+3. forever start web/server-http.js    
