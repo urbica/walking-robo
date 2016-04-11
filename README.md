@@ -44,3 +44,11 @@ iojs import/import --task gis --step sql
 1. Зайти под robosm
 2. cd ~/data/walking-robo
 3. forever start web/server-http.js    
+
+##Дополнительно
+1. Базы должны быть созданны заранее с включённым PostGIS'ом:
+```
+CREATE DATABASE azore;
+\connect azore
+CREATE EXTENSION postgis;
+```
