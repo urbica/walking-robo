@@ -1,5 +1,7 @@
 # walking-robo
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/urbica/walking-robo.svg)](https://greenkeeper.io/)
+
 ##Как всё устроено
 1. Работает всё от пользователя robosm
  * папка с данными /home/robosm/data (абсолютный путь - значит пусть на сервере)
